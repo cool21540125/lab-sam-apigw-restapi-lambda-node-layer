@@ -6,10 +6,16 @@ Transform:
   - AWS::Serverless-2016-10-31
 
 Resources:
+  ### Api Gateway FIXME: 不知道為啥, 直接聲明, FN 再用 RestApiId !Ref ServerlessRestApi 會發生錯誤
+  # ServerlessRestApi:
+  #   Type: AWS::ApiGateway::RestApi
+  #   Properties:
+  #     Name: ServerlessRestApi
+
   getAllItemsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: sam-app-getAllItemsFunction
+      FunctionName: sam-node-getAllItemsFunction
       CodeUri: src/handlers
       Handler: get-all-items.getAllItemsHandler
       Runtime: nodejs18.x
@@ -18,22 +24,27 @@ Resources:
       MemorySize: 128
       Timeout: 100
       Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Environment:
+        Variables:
+          SAMPLE_TABLE: !Ref SampleTable
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
       Layers:
         - !Ref HelpersLayer
       Events:
-        Api:
-          Type: HttpApi
+        ApiEvent:
+          Type: Api
           Properties:
             Path: /
             Method: GET
-            ApiId: !Ref ExampleApiGateway
+            # RestApiId:
+            #   Ref: ServerlessRestApi
 
   getByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: sam-node-getByIdFunction
       CodeUri: src/handlers
       Handler: get-by-id.getByIdHandler
       Runtime: nodejs18.x
@@ -47,19 +58,22 @@ Resources:
             TableName: !Ref SampleTable
       Environment:
         Variables:
+          SAMPLE_TABLE: !Ref SampleTable
       Layers:
         - !Ref HelpersLayer
       Events:
-        Api:
-          Type: HttpApi
+        ApiEvent:
+          Type: Api
           Properties:
             Path: /{id}
             Method: GET
-            ApiId: !Ref ExampleApiGateway
+            # RestApiId:
+            #   Ref: ServerlessRestApi
 
   putItemFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: sam-node-putItemFunction
       CodeUri: src/handlers
       Handler: put-item.putItemHandler
       Runtime: nodejs18.x
@@ -73,19 +87,22 @@ Resources:
             TableName: !Ref SampleTable
       Environment:
         Variables:
+          SAMPLE_TABLE: !Ref SampleTable
       Layers:
         - !Ref HelpersLayer
       Events:
-        Api:
-          Type: HttpApi
+        ApiEvent:
+          Type: Api
           Properties:
             Path: /
             Method: POST
-            ApiId: !Ref ExampleApiGateway
+            # RestApiId:
+            #   Ref: ServerlessRestApi
 
   deleteByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: sam-node-deleteByIdFunction
       CodeUri: src/handlers
       Handler: /delete-by-id.deleteByIdHandler
       Runtime: nodejs18.x
@@ -99,15 +116,17 @@ Resources:
             TableName: !Ref SampleTable
       Environment:
         Variables:
+          SAMPLE_TABLE: !Ref SampleTable
       Layers:
         - !Ref HelpersLayer
       Events:
-        Api:
-          Type: HttpApi
+        ApiEvent:
+          Type: Api
           Properties:
             Path: /{id}
             Method: DELETE
-            ApiId: !Ref ExampleApiGateway
+            # RestApiId:
+            #   Ref: ServerlessRestApi
 
   SampleTable:
     Type: AWS::Serverless::SimpleTable
@@ -127,6 +146,8 @@ Resources:
         - nodejs18.x
 
 Outputs:
-  WebEndpoint:
-    Description: "API Gateway endpoint URL for dev stage"
-    Value: !Sub "https://${ExampleApiGateway}.execute-api.${AWS::Region}.amazonaws.com/dev/"
+  ApiEndpoint:
+    Description: "The `invoke` URL for our HTTP API"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+  DdbTableName:
+    Value: !Ref SampleTable
