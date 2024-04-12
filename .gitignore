@@ -7,3 +7,5 @@ node_modules
 __tests__
 
 .vscode
+
+**/layer/*.zip

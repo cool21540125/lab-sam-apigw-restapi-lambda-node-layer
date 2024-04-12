@@ -19,9 +19,8 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref SampleTable
-      Environment:
-        Variables:
-          SAMPLE_TABLE: !Ref SampleTable
+      Layers:
+        - !Ref HelpersLayer
       Events:
         Api:
           Type: HttpApi
@@ -45,7 +44,8 @@ Resources:
             TableName: !Ref SampleTable
       Environment:
         Variables:
-          SAMPLE_TABLE: !Ref SampleTable
+      Layers:
+        - !Ref HelpersLayer
       Events:
         Api:
           Type: HttpApi
@@ -69,7 +69,8 @@ Resources:
             TableName: !Ref SampleTable
       Environment:
         Variables:
-          SAMPLE_TABLE: !Ref SampleTable
+      Layers:
+        - !Ref HelpersLayer
       Events:
         Api:
           Type: HttpApi
@@ -93,7 +94,8 @@ Resources:
             TableName: !Ref SampleTable
       Environment:
         Variables:
-          SAMPLE_TABLE: !Ref SampleTable
+      Layers:
+        - !Ref HelpersLayer
       Events:
         Api:
           Type: HttpApi
@@ -110,11 +112,14 @@ Resources:
         Type: String
       TableName: http-crud-tutorial-items
 
-  ExampleApiGateway:
-    Type: AWS::Serverless::HttpApi
+  HelpersLayer:
+    Type: AWS::Serverless::LayerVersion
     Properties:
-      Name: http-crud-tutorial-api
-      StageName: dev
+      LayerName: nodelayer
+      Description: layers for nodejs
+      ContentUri: ./dependencies/layer
+      CompatibleRuntimes:
+        - nodejs18.x
 
 Outputs:
   WebEndpoint:
