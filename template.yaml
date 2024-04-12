@@ -9,7 +9,9 @@ Resources:
   getAllItemsFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-all-items.getAllItemsHandler
+      FunctionName: sam-app-getAllItemsFunction
+      CodeUri: src/handlers
+      Handler: get-all-items.getAllItemsHandler
       Runtime: nodejs18.x
       Architectures:
         - x86_64
@@ -32,7 +34,8 @@ Resources:
   getByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-by-id.getByIdHandler
+      CodeUri: src/handlers
+      Handler: get-by-id.getByIdHandler
       Runtime: nodejs18.x
       Architectures:
         - x86_64
@@ -57,7 +60,8 @@ Resources:
   putItemFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/put-item.putItemHandler
+      CodeUri: src/handlers
+      Handler: put-item.putItemHandler
       Runtime: nodejs18.x
       Architectures:
         - x86_64
@@ -82,7 +86,8 @@ Resources:
   deleteByIdFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/delete-by-id.deleteByIdHandler
+      CodeUri: src/handlers
+      Handler: /delete-by-id.deleteByIdHandler
       Runtime: nodejs18.x
       Architectures:
         - x86_64
