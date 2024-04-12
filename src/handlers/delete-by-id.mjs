@@ -22,24 +22,14 @@ export const deleteByIdHandler = async (event) => {
   // Get id from pathParameters from APIGateway because of `/{id}` at template.yaml
   const id = event.pathParameters.id;
 
-  // Get the item from the table
-  // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#get-property
-  var params = {
-    TableName: tableName,
-    Key: { id: id },
-  };
-
   try {
-    // const data = await ddbDocClient.send(new GetCommand(params));
-    // var item = data.Item;
-
     const command = new DeleteCommand({
-      TableName: "Sodas",
+      TableName: tableName,
       Key: {
-        Flavor: "Cola",
+        id: id,
       },
     });
-  
+
     const response = await ddbDocClient.send(command);
 
   } catch (err) {
