@@ -1,0 +1,9 @@
+node_modules
+
+.aws-sam
+
+.env
+
+__tests__
+
+.vscode
